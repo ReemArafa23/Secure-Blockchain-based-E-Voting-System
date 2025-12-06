@@ -156,3 +156,25 @@ def list_active_elections():
     """Helper for later (voting feature): return only active elections."""
     elections = _load_elections()
     return [e for e in elections if e.get("is_active")]
+
+def print_active_elections(show_candidates=False):
+    """Print only active elections, used by voters."""
+    active = list_active_elections()
+
+    if not active:
+        print("\nNo ACTIVE elections at the moment.")
+        return
+
+    print("\n=== ACTIVE Elections ===")
+    for e in active:
+        print(f"- ID: {e['id']} | {e['title']} [ACTIVE]")
+        print(f"  Description: {e['description']}")
+        if show_candidates:
+            candidates = e.get("candidates", [])
+            if not candidates:
+                print("  Candidates: (none yet)")
+            else:
+                print("  Candidates:")
+                for c in candidates:
+                    print(f"    [{c['id']}] {c['name']}")
+        print()

@@ -10,5 +10,17 @@
     "password_hash": "c02dfa6452df87029834d61e5c77ecab8dd41d0af552e97200dc616454a7cf5b",
     "salt": "466348d46f90c18999b648e60f78eed4",
     "role": "voter"
+  },
+  {
+    "username": "reem-arafa",
+    "password_hash": "d30c54157befd222fb19b766e6a101d6b7740ca15d7bbe5a7df0d76f0604e9b7",
+    "salt": "2e1d6eb6736973a9e40a708fab443ca3",
+    "role": "voter"
+  },
+  {
+    "username": "nadia",
+    "password_hash": "2f62cf00a1b16c55ffe7099289bd2c17e5c5e22c71858e00a0f2680b44faa9ff",
+    "salt": "dbfcb8170190b80add9941a3cc4a5a30",
+    "role": "voter"
   }
 ]

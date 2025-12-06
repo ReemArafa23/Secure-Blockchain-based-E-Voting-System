@@ -3,11 +3,15 @@
     "id": 1,
     "title": "Student Union President 2025",
     "description": "Election for student union president.",
-    "is_active": false,
+    "is_active": true,
     "candidates": [
       {
         "id": 1,
         "name": "reem"
+      },
+      {
+        "id": 2,
+        "name": "reem-arafa"
       }
     ]
   }
