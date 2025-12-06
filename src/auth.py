@@ -2,6 +2,8 @@ import json
 import os
 import hashlib
 import getpass
+from reporting import log_action
+
 
 # Build the path to data/users.json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,6 +91,7 @@ def register_user():
     users.append(new_user)
     _save_users(users)
 
+    log_action(username, "REGISTER", f"role={role}")
     print(f"✅ User '{username}' registered successfully as {role.upper()}.")
 
 
@@ -118,4 +121,5 @@ def login_user():
         return None
 
     print(f"✅ Logged in as {user['username']} ({user['role']}).")
+    log_action(username, "LOGIN", f"role={user['role']}")
     return user

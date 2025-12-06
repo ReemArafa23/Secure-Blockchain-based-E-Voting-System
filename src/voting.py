@@ -2,6 +2,7 @@ import json
 import os
 from election import list_active_elections
 from blockchain import add_vote_to_blockchain
+from reporting import log_action
 
 # Base directory (project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -127,4 +128,6 @@ def cast_vote(user):
 
     print(f"✅ Your vote for '{candidate['name']}' has been recorded.")
     print(f"   → Blockchain block index: {new_block.index}")
+    log_action(username, "VOTE",
+               f"election_id={election_id}, candidate_id={candidate_id}, block_index={new_block.index}")
 

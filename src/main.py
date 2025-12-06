@@ -9,7 +9,7 @@ from election import (
 )
 from voting import cast_vote
 from blockchain import print_blockchain, check_blockchain_integrity
-
+from reporting import show_results, export_election_results_to_file, show_security_info
 
 def guest_menu():
     """
@@ -47,7 +47,7 @@ def user_menu(user):
 
 def admin_menu(user):
     """
-    Admin-only functions: manage elections, candidates, and blockchain.
+    Admin-only functions: manage elections, candidates, blockchain, and reports.
     """
     while True:
         print(f"\n=== ADMIN MENU ({user['username']}) ===")
@@ -57,7 +57,10 @@ def admin_menu(user):
         print("4. Open/Close election")
         print("5. View blockchain")
         print("6. Verify blockchain integrity")
-        print("7. Logout")
+        print("7. View election results")
+        print("8. Export election results to file")
+        print("9. Show security information")
+        print("10. Logout")
 
         choice = input("Choose an option: ").strip()
 
@@ -74,6 +77,12 @@ def admin_menu(user):
         elif choice == "6":
             check_blockchain_integrity()
         elif choice == "7":
+            show_results()
+        elif choice == "8":
+            export_election_results_to_file()
+        elif choice == "9":
+            show_security_info()
+        elif choice == "10":
             print("Logging out...")
             return
         else:

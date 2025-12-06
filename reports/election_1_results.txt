@@ -1,0 +1,8 @@
+Election ID: 1
+Title      : Student Union President 2025
+Description: Election for student union president.
+Total votes: 2
+
+Candidates:
+  - reem: 1 vote(s)
+  - reem-arafa: 1 vote(s)
