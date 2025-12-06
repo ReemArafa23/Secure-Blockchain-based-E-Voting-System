@@ -1,6 +1,7 @@
 import json
 import os
 from election import list_active_elections
+from blockchain import add_vote_to_blockchain
 
 # Base directory (project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -110,7 +111,7 @@ def cast_vote(user):
         print("❌ No such candidate in this election.")
         return
 
-    # Save vote
+    # Save vote in votes.json
     votes = _load_votes()
     new_vote = {
         "id": _next_vote_id(votes),
@@ -121,6 +122,9 @@ def cast_vote(user):
     votes.append(new_vote)
     _save_votes(votes)
 
-    # (Later we will also create a block in the blockchain here.)
+    # Also store the vote in the blockchain
+    new_block = add_vote_to_blockchain(username, election_id, candidate_id)
 
     print(f"✅ Your vote for '{candidate['name']}' has been recorded.")
+    print(f"   → Blockchain block index: {new_block.index}")
+

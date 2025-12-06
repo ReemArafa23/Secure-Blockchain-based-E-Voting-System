@@ -22,5 +22,11 @@
     "password_hash": "2f62cf00a1b16c55ffe7099289bd2c17e5c5e22c71858e00a0f2680b44faa9ff",
     "salt": "dbfcb8170190b80add9941a3cc4a5a30",
     "role": "voter"
+  },
+  {
+    "username": "nadia-hazem",
+    "password_hash": "74716e319ea886b06d0a2f24eecdc71e17ed610e3065c0d53fc4bae2f5be2427",
+    "salt": "3fd5fafde1644dcf5f77b487a2ddce95",
+    "role": "voter"
   }
 ]

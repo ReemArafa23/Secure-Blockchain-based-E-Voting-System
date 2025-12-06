@@ -4,5 +4,11 @@
     "election_id": 1,
     "voter_username": "nadia",
     "candidate_id": 1
+  },
+  {
+    "id": 2,
+    "election_id": 1,
+    "voter_username": "nadia-hazem",
+    "candidate_id": 2
   }
 ]
