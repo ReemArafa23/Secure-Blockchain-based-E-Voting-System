@@ -155,6 +155,40 @@ class Blockchain:
     def get_chain(self):
         """Return list of blocks."""
         return self.chain
+    
+    def is_valid(self):
+        """
+        Check that:
+        - each block's hash is correct
+        - each block's previous_hash matches the hash of the previous block
+        Returns: (is_valid: bool, message: str)
+        """
+        if not self.chain:
+            return False, "Blockchain is empty."
+
+        for i, block in enumerate(self.chain):
+            # Recalculate hash
+            recalculated = self._calculate_hash(
+                block.index,
+                block.timestamp,
+                block.voter_hash,
+                block.election_id,
+                block.candidate_id,
+                block.previous_hash,
+            )
+
+            if block.hash != recalculated:
+                return False, f"Invalid hash at block index {block.index}."
+
+            # Check previous_hash linkage (skip for genesis block)
+            if i > 0:
+                prev_block = self.chain[i - 1]
+                if block.previous_hash != prev_block.hash:
+                    return False, f"Broken link between block {prev_block.index} and {block.index}."
+
+        return True, "Blockchain is valid."
+
+
 
 
 # Create a single global blockchain instance for the whole app
@@ -173,3 +207,40 @@ def get_blockchain():
     Return the global blockchain instance (for reading / validation later).
     """
     return _blockchain_instance
+
+def print_blockchain():
+    """
+    Pretty-print the blockchain to the console.
+    """
+    bc = get_blockchain()
+    chain = bc.get_chain()
+
+    if not chain:
+        print("\nBlockchain is empty.")
+        return
+
+    print("\n=== BLOCKCHAIN ===")
+    for block in chain:
+        print(f"Index       : {block.index}")
+        print(f"Timestamp   : {block.timestamp}")
+        print(f"Voter Hash  : {block.voter_hash}")
+        print(f"Election ID : {block.election_id}")
+        print(f"Candidate ID: {block.candidate_id}")
+        print(f"Prev Hash   : {block.previous_hash}")
+        print(f"Hash        : {block.hash}")
+        print("-" * 60)
+
+def check_blockchain_integrity():
+    """
+    Run integrity check and print the result.
+    Returns (is_valid, message).
+    """
+    bc = get_blockchain()
+    is_valid, msg = bc.is_valid()
+    if is_valid:
+        print("\n✅ Blockchain integrity check PASSED.")
+        print(f"   Details: {msg}")
+    else:
+        print("\n❌ Blockchain integrity check FAILED.")
+        print(f"   Details: {msg}")
+    return is_valid, msg
