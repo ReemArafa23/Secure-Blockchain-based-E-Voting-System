@@ -1,0 +1,20 @@
+[
+  {
+    "index": 0,
+    "timestamp": "2025-12-06T19:15:15.688406",
+    "voter_hash": "GENESIS",
+    "election_id": -1,
+    "candidate_id": -1,
+    "previous_hash": "0",
+    "hash": "6f8fcba2a29fefca57116688e28e9b3e011d8365362f721afedfe3fea70d20a4"
+  },
+  {
+    "index": 1,
+    "timestamp": "2025-12-06T19:17:32.795657",
+    "voter_hash": "c766c866f4545b05a5f114d4804d7833c468f25f2e5b3e4bce2cbef85bfad97f",
+    "election_id": 1,
+    "candidate_id": 2,
+    "previous_hash": "6f8fcba2a29fefca57116688e28e9b3e011d8365362f721afedfe3fea70d20a4",
+    "hash": "646be6a3276688409f863b66a9819a869e50af01eedef8417e2a75fc432ec021"
+  }
+]
