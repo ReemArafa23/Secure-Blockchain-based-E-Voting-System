@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Blockchain E-Voting – Demo UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f1f7ff;
+      --bg-deep: #0b1f3b;
+      --card: #ffffff;
+      --accent: #2f80ed;       /* baby-ish blue */
+      --accent-soft: #e0ecff;
+      --accent-dark: #16386b;  /* dark blue */
+      --text-main: #1c2640;
+      --text-muted: #6b7a99;
+      --danger: #e63946;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 16px 40px rgba(6, 33, 76, 0.13);
+      --transition: 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #e0edff 0, #f5f9ff 45%, #ffffff 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* Top bar */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.4rem;
+      color: var(--accent-dark);
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      font-size: 0.8rem;
+      color: var(--accent-dark);
+    }
+
+    /* Nav */
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .nav-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 10px 25px rgba(23, 82, 178, 0.35);
+    }
+
+    .nav-btn:hover {
+      background: rgba(47, 128, 237, 0.09);
+      color: var(--accent-dark);
+      border-color: rgba(47, 128, 237, 0.35);
+    }
+
+    /* Layout */
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      color: var(--accent-dark);
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* Forms */
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 4px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid #ccd9f5;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(47, 128, 237, 0.25);
+    }
+
+    .btn-primary {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 25px rgba(23, 82, 178, 0.35);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow: 0 14px 32px rgba(23, 82, 178, 0.45);
+    }
+
+    .btn-ghost {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: #f7f9ff;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .btn-ghost:hover {
+      background: #fff;
+      border-color: rgba(47, 128, 237, 0.35);
+      color: var(--accent-dark);
+    }
+
+    .btn-danger {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(230, 57, 70, 0.3);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      background: rgba(230, 57, 70, 0.08);
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .small-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: #e4edff;
+      color: #344e93;
+    }
+
+    .list {
+      margin-top: 10px;
+      max-height: 230px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .item {
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      padding: 8px 9px;
+      margin-bottom: 6px;
+      background: #f9fbff;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 0.7rem;
+      background: rgba(15, 76, 129, 0.08);
+      color: #1f4a7c;
+    }
+
+    .block-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      margin-top: 6px;
+    }
+
+    .block-table th,
+    .block-table td {
+      border-bottom: 1px solid #e0e6f5;
+      padding: 4px 4px;
+      text-align: left;
+    }
+
+    .block-table th {
+      background: #f2f6ff;
+      color: var(--accent-dark);
+      position: sticky;
+      top: 0;
+    }
+
+    .label-ok {
+      color: #1b8a5a;
+      font-weight: 600;
+    }
+
+    .label-bad {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .security-list {
+      list-style: none;
+      font-size: 0.82rem;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: var(--text-main);
+    }
+
+    .security-list li span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .log-box {
+      background: #050b19;
+      color: #d6e3ff;
+      font-family: "Consolas", "Fira Code", monospace;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      max-height: 224px;
+      overflow: auto;
+    }
+
+    .log-line {
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="logo-area">
+      <h1>Secure Blockchain E-Voting</h1>
+      <span>Frontend demo – baby blue & dark blue theme</span>
+    </div>
+    <div class="row">
+      <div id="currentUserPill" class="status-pill">
+        Not logged in
+      </div>
+      <button id="logoutBtn" class="btn-ghost" style="display:none;">Logout</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-tabs" style="margin-bottom:14px;">
+    <button class="nav-btn active" data-section="authSection">🔑 Login / Register</button>
+    <button class="nav-btn" data-section="adminSection">🛡️ Admin</button>
+    <button class="nav-btn" data-section="voterSection">🗳️ Voter</button>
+    <button class="nav-btn" data-section="securitySection">🔐 Security & Logs</button>
+  </div>
+
+  <!-- Sections -->
+  <!-- AUTH -->
+  <section id="authSection" class="section active">
+    <div class="grid">
+      <!-- Login -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Login</h2>
+            <p class="card-sub">Use your username & password to access Admin or Voter dashboards.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" type="text" placeholder="e.g., admin" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="Your password" />
+        </div>
+        <button id="loginSubmit" class="btn-primary">Login</button>
+
+        <p class="small-text" style="margin-top: 10px;">
+          The first registered user becomes <span class="tag">ADMIN</span>.  
+          All later users become <span class="tag">VOTER</span>.
+        </p>
+
+        <p id="authMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+
+      <!-- Register -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Register</h2>
+            <p class="card-sub">
+              Creates a new user. First user = admin, others = voters. Stored only in your browser (demo).
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regUsername">New username</label>
+          <input id="regUsername" type="text" placeholder="Choose a username" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input id="regPassword" type="password" placeholder="Choose a password" />
+        </div>
+        <div class="form-group">
+          <label for="regConfirm">Confirm password</label>
+          <input id="regConfirm" type="password" placeholder="Re-type password" />
+        </div>
+        <button id="registerSubmit" class="btn-primary">Register</button>
+
+        <p id="regMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN SECTION -->
+  <section id="adminSection" class="section">
+    <div class="grid">
+      <!-- Elections management -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Elections & Candidates</h2>
+            <p class="card-sub">Create elections, configure candidates, and open/close voting windows.</p>
+          </div>
+          <span class="tag">Admin only</span>
+        </div>
+
+        <!-- Create election -->
+        <div class="form-group">
+          <label>New election title</label>
+          <input id="electionTitle" type="text" placeholder="Student Union President 2025" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input id="electionDesc" type="text" placeholder="Short summary of the election" />
+        </div>
+        <button id="createElectionBtn" class="btn-primary">Create Election</button>
+
+        <div class="small-text">Hint: Elections are created CLOSED. Toggle them to ACTIVE when you're ready.</div>
+
+        <div class="list" id="electionList"></div>
+      </div>
+
+      <!-- Blockchain & results -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Blockchain & Integrity</h2>
+            <p class="card-sub">Inspect the vote ledger and run integrity checks. View tallied results.</p>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:8px;">
+          <button id="viewChainBtn" class="btn-ghost">View Blockchain</button>
+          <button id="checkChainBtn" class="btn-ghost">Verify Integrity</button>
+          <button id="showResultsBtn" class="btn-ghost">Show Results</button>
+        </div>
+
+        <p id="chainStatus" class="small-text"></p>
+
+        <div id="blockchainContainer" class="list" style="max-height:170px;"></div>
+
+        <div id="resultsContainer" class="list" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOTER SECTION -->
+  <section id="voterSection" class="section">
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Active Elections</h2>
+            <p class="card-sub">See all currently open elections and their candidates.</p>
+          </div>
+        </div>
+        <div id="activeElectionsList" class="list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Cast Your Vote</h2>
+            <p class="card-sub">
+              Select an active election and candidate. The system prevents double-voting.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="voteElectionSelect">Election</label>
+          <select id="voteElectionSelect">
+            <option value="">Choose an active election</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="voteCandidateSelect">Candidate</label>
+          <select id="voteCandidateSelect">
+            <option value="">Choose a candidate</option>
+          </select>
+        </div>
+
+        <button id="castVoteBtn" class="btn-primary">Cast Vote</button>
+        <p id="voteMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY SECTION -->
+  <section id="securitySection" class="section">
+    <div class="grid">
+      <!-- Explanation -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Security Overview</h2>
+            <p class="card-sub">High-level summary of how the system protects integrity & access.</p>
+          </div>
+        </div>
+
+        <ul class="security-list">
+          <li><span>Authentication & Roles:</span> Users login with a username & password. The first user is an
+            <strong>Admin</strong>, later ones are <strong>Voters</strong>. Each role sees different menus.</li>
+          <li><span>Password Handling:</span> On this demo UI, passwords are stored as a simple hash in
+            <code>localStorage</code> to mirror the console backend where salted SHA-256 is used.</li>
+          <li><span>Election Control:</span> Only admins can create, configure, open, or close elections. Voters can
+            only interact with <strong>active</strong> elections.</li>
+          <li><span>Double-Voting Protection:</span> Before a vote is accepted, the system checks if this user already
+            voted in that election. If yes, the vote is rejected.</li>
+          <li><span>Blockchain Storage:</span> Every accepted vote is turned into a block (index, voter hash,
+            election ID, candidate ID, previous hash, current hash).</li>
+          <li><span>Integrity Verification:</span> When the admin runs a check, the app recomputes all hashes and
+            ensures each block’s <code>previousHash</code> matches the hash of the previous block.</li>
+          <li><span>Auditability:</span> Logs are simulated below to show registration, login, and voting actions.</li>
+        </ul>
+      </div>
+
+      <!-- Logs -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Action Log (Demo)</h2>
+            <p class="card-sub">Simple log showing what happened during this session.</p>
+          </div>
+        </div>
+        <div id="logBox" class="log-box"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer-note">
+    This page is a <strong>frontend demo</strong> of your Python console project.  
+    Use it with GitHub Pages to present the system visually while the real security logic runs in Python.
+  </p>
+</div>
+
+<script>
+  // ---------- Simple in-browser "backend" ----------
+
+  // Data stored in localStorage keys
+  const STORAGE_KEYS = {
+    users: "evoting_users",
+    elections: "evoting_elections",
+    votes: "evoting_votes",
+    blockchain: "evoting_blockchain",
+    logs: "evoting_logs",
+    currentUser: "evoting_current_user",
+  };
+
+  function loadList(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveList(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function appendLog(line) {
+    const logs = loadList(STORAGE_KEYS.logs);
+    const ts = new Date().toISOString();
+    logs.push(`[${ts}] ${line}`);
+    saveList(STORAGE_KEYS.logs, logs);
+    renderLogs();
+  }
+
+  function simpleHash(str) {
+    // Not cryptographically secure – demo only
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    }
+    return h.toString(16);
+  }
+
+  function getCurrentUser() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.currentUser));
+    } catch {
+      return null;
+    }
+  }
+
+  function setCurrentUser(user) {
+    if (user) {
+      localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.currentUser);
+    }
+    updateUserPill();
+  }
+
+  // ---------- UI helpers ----------
+
+  function showSection(id) {
+    document.querySelectorAll(".section").forEach((sec) => {
+      sec.classList.remove("active");
+    });
+    const el = document.getElementById(id);
+    if (el) el.classList.add("active");
+
+    document.querySelectorAll(".nav-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.section === id);
+    });
+  }
+
+  function updateUserPill() {
+    const pill = document.getElementById("currentUserPill");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const user = getCurrentUser();
+    if (!user) {
+      pill.textContent = "Not logged in";
+      logoutBtn.style.display = "none";
+    } else {
+      pill.textContent = `${user.username} (${user.role.toUpperCase()})`;
+      logoutBtn.style.display = "inline-flex";
+    }
+  }
+
+  // ---------- Auth logic ----------
+
+  function registerUser(username, password, confirm) {
+    const users = loadList(STORAGE_KEYS.users);
+    if (!username || !password || !confirm) return "Please fill all fields.";
+    if (password !== confirm) return "Passwords do not match.";
+    if (users.find((u) => u.username === username)) return "Username already exists.";
+
+    const hasAdmin = users.some((u) => u.role === "admin");
+    const role = hasAdmin ? "voter" : "admin";
+
+    users.push({
+      username,
+      passwordHash: simpleHash(password),
+      role,
+    });
+    saveList(STORAGE_KEYS.users, users);
+    appendLog(`REGISTER user=${username} role=${role}`);
+    return `Registered successfully as ${role.toUpperCase()}. You can now login.`;
+  }
+
+  function loginUser(username, password) {
+    const users = loadList(STORAGE_KEYS.users);
+    if (!username || !password) return { ok: false, msg: "Please fill all fields." };
+    const user = users.find((u) => u.username === username);
+    if (!user) return { ok: false, msg: "No such user." };
+
+    if (user.passwordHash !== simpleHash(password)) {
+      return { ok: false, msg: "Incorrect password." };
+    }
+    setCurrentUser({ username: user.username, role: user.role });
+    appendLog(`LOGIN user=${username} role=${user.role}`);
+    return { ok: true, msg: `Logged in as ${user.role.toUpperCase()}.` };
+  }
+
+  // ---------- Elections & voting ----------
+
+  function getNextId(list) {
+    return list.length ? Math.max(...list.map((x) => x.id)) + 1 : 1;
+  }
+
+  function createElection(title, desc) {
+    if (!title) return "Title is required";
+    const elections = loadList(STORAGE_KEYS.elections);
+    const newElection = {
+      id: getNextId(elections),
+      title,
+      desc,
+      isActive: false,
+      candidates: [],
+    };
+    elections.push(newElection);
+    saveList(STORAGE_KEYS.elections, elections);
+    appendLog(`CREATE_ELECTION id=${newElection.id} title="${title}"`);
+    renderElections();
+    renderActiveElections();
+    return `Election #${newElection.id} created (currently CLOSED).`;
+  }
+
+  function addCandidate(electionId, name) {
+    const elections = loadList(STORAGE_KEYS.elections);
+    const election = elections.find((e) => e.id === electionId);
+    if (!election) return "Election not found.";
+    if (!name) return "Candidate name required.";
+    const cid = election.candidates.length
+      ? Math.max(...election.candidates.map((c) => c.id)) + 1
+      : 1;
+    election.candidates.push({ id: cid, name });
+    saveList(STORAGE_KEYS.elections, elections);
+    appendLog(`ADD_CANDIDATE election=${electionId} name="${name}"`);
+    renderElections();
+    renderActiveElections();
+    return `Candidate "${name}" added.`;
+  }
+
+  function toggleElectionActive(electionId) {
+    const elections = loadList(STORAGE_KEYS.elections);
+    const election = elections.find((e) => e.id === electionId);
+    if (!election) return "Election not found.";
+    election.isActive = !election.isActive;
+    saveList(STORAGE_KEYS.elections, elections);
+    appendLog(`TOGGLE_ELECTION id=${electionId} now=${election.isActive ? "ACTIVE" : "CLOSED"}`);
+    renderElections();
+    renderActiveElections();
+    return `Election "${election.title}" is now ${election.isActive ? "ACTIVE" : "CLOSED"}.`;
+  }
+
+  function getActiveElections() {
+    const elections = loadList(STORAGE_KEYS.elections);
+    return elections.filter((e) => e.isActive);
+  }
+
+  function userHasVoted(username, electionId) {
+    const votes = loadList(STORAGE_KEYS.votes);
+    return votes.some((v) => v.username === username && v.electionId === electionId);
+  }
+
+  function castVote(username, electionId, candidateId) {
+    const elections = loadList(STORAGE_KEYS.elections);
+    const votes = loadList(STORAGE_KEYS.votes);
+    const election = elections.find((e) => e.id === electionId && e.isActive);
+    if (!election) return "Election not found or not active.";
+    const candidate = election.candidates.find((c) => c.id === candidateId);
+    if (!candidate) return "Candidate not found.";
+    if (userHasVoted(username, electionId)) {
+      return "You already voted in this election.";
+    }
+    const newVote = {
+      id: getNextId(votes),
+      username,
+      electionId,
+      candidateId,
+    };
+    votes.push(newVote);
+    saveList(STORAGE_KEYS.votes, votes);
+    appendLog(`VOTE user=${username} election=${electionId} candidate=${candidateId}`);
+    addBlockForVote(username, electionId, candidateId);
+    return `Your vote for "${candidate.name}" has been recorded.`;
+  }
+
+  // ---------- Blockchain ----------
+
+  function loadChain() {
+    let chain = loadList(STORAGE_KEYS.blockchain);
+    if (!chain.length) {
+      // create genesis block
+      const genesis = {
+        index: 0,
+        timestamp: new Date().toISOString(),
+        voterHash: "GENESIS",
+        electionId: -1,
+        candidateId: -1,
+        prevHash: "0",
+        hash: "",
+      };
+      genesis.hash = simpleHash(
+        `${genesis.index}${genesis.timestamp}${genesis.voterHash}${genesis.electionId}${genesis.candidateId}${genesis.prevHash}`
+      );
+      chain.push(genesis);
+      saveList(STORAGE_KEYS.blockchain, chain);
+    }
+    return chain;
+  }
+
+  function saveChain(chain) {
+    saveList(STORAGE_KEYS.blockchain, chain);
+  }
+
+  function addBlockForVote(username, electionId, candidateId) {
+    const chain = loadChain();
+    const last = chain[chain.length - 1];
+    const index = last.index + 1;
+    const timestamp = new Date().toISOString();
+    const voterHash = simpleHash(username);
+    const prevHash = last.hash;
+    const hash = simpleHash(
+      `${index}${timestamp}${voterHash}${electionId}${candidateId}${prevHash}`
+    );
+    const block = {
+      index,
+      timestamp,
+      voterHash,
+      electionId,
+      candidateId,
+      prevHash,
+      hash,
+    };
+    chain.push(block);
+    saveChain(chain);
+  }
+
+  function verifyChain() {
+    const chain = loadChain();
+    for (let i = 0; i < chain.length; i++) {
+      const b = chain[i];
+      const recomputed = simpleHash(
+        `${b.index}${b.timestamp}${b.voterHash}${b.electionId}${b.candidateId}${b.prevHash}`
+      );
+      if (recomputed !== b.hash) {
+        return { ok: false, msg: `Invalid hash at block index ${b.index}` };
+      }
+      if (i > 0) {
+        const prev = chain[i - 1];
+        if (b.prevHash !== prev.hash) {
+          return {
+            ok: false,
+            msg: `Broken link between blocks ${prev.index} and ${b.index}`,
+          };
+        }
+      }
+    }
+    return { ok: true, msg: "Blockchain is valid." };
+  }
+
+  // ---------- Results ----------
+
+  function computeResults() {
+    const elections = loadList(STORAGE_KEYS.elections);
+    const votes = loadList(STORAGE_KEYS.votes);
+    const results = [];
+    elections.forEach((e) => {
+      const counts = {};
+      votes
+        .filter((v) => v.electionId === e.id)
+        .forEach((v) => {
+          counts[v.candidateId] = (counts[v.candidateId] || 0) + 1;
+        });
+      results.push({ election: e, counts });
+    });
+    return results;
+  }
+
+  // ---------- Rendering ----------
+
+  function renderElections() {
+    const container = document.getElementById("electionList");
+    const elections = loadList(STORAGE_KEYS.elections);
+    container.innerHTML = "";
+    elections.forEach((e) => {
+      const div = document.createElement("div");
+      div.className = "item";
+
+      const header = document.createElement("div");
+      header.className = "item-header";
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = `#${e.id} – ${e.title}`;
+      const status = document.createElement("span");
+      status.className = "pill";
+      status.textContent = e.isActive ? "ACTIVE" : "CLOSED";
+      header.appendChild(title);
+      header.appendChild(status);
+
+      const desc = document.createElement("div");
+      desc.className = "small-text";
+      desc.textContent = e.desc || "No description.";
+
+      const candList = document.createElement("div");
+      candList.className = "small-text";
+      candList.textContent = "Candidates: " +
+        (e.candidates.length
+          ? e.candidates.map((c) => `${c.id}) ${c.name}`).join(", ")
+          : "none yet.");
+
+      // controls
+      const controls = document.createElement("div");
+      controls.className = "row";
+      controls.style.marginTop = "4px";
+
+      const candInput = document.createElement("input");
+      candInput.placeholder = "New candidate name";
+      candInput.style.flex = "1";
+
+      const addBtn = document.createElement("button");
+      addBtn.textContent = "Add";
+      addBtn.className = "btn-ghost";
+      addBtn.onclick = () => {
+        const msg = addCandidate(e.id, candInput.value.trim());
+        alert(msg);
+        candInput.value = "";
+      };
+
+      const toggleBtn = document.createElement("button");
+      toggleBtn.textContent = e.isActive ? "Close" : "Open";
+      toggleBtn.className = "btn-ghost";
+      toggleBtn.onclick = () => {
+        const msg = toggleElectionActive(e.id);
+        alert(msg);
+      };
+
+      controls.appendChild(candInput);
+      controls.appendChild(addBtn);
+      controls.appendChild(toggleBtn);
+
+      div.appendChild(header);
+      div.appendChild(desc);
+      div.appendChild(candList);
+      div.appendChild(controls);
+
+      container.appendChild(div);
+    });
+  }
+
+  function renderActiveElections() {
+    const listDiv = document.getElementById("activeElectionsList");
+    const selectElection = document.getElementById("voteElectionSelect");
+    const selectCandidate = document.getElementById("voteCandidateSelect");
+
+    const active = getActiveElections();
+
+    // list for voters
+    listDiv.innerHTML = "";
+    active.forEach((e) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      const header = document.createElement("div");
+      header.className = "item-header";
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = `#${e.id} – ${e.title}`;
+      const tag = document.createElement("span");
+      tag.className = "pill";
+      tag.textContent = "ACTIVE";
+      header.appendChild(title);
+      header.appendChild(tag);
+
+      const desc = document.createElement("div");
+      desc.className = "small-text";
+      desc.textContent = e.desc || "";
+
+      const cand = document.createElement("div");
+      cand.className = "small-text";
+      cand.textContent =
+        "Candidates: " +
+        (e.candidates.length
+          ? e.candidates.map((c) => `${c.id}) ${c.name}`).join(", ")
+          : "none configured yet.");
+
+      div.appendChild(header);
+      div.appendChild(desc);
+      div.appendChild(cand);
+
+      listDiv.appendChild(div);
+    });
+
+    // dropdown for voting
+    selectElection.innerHTML = `<option value="">Choose an active election</option>`;
+    active.forEach((e) => {
+      const opt = document.createElement("option");
+      opt.value = e.id;
+      opt.textContent = `#${e.id} – ${e.title}`;
+      selectElection.appendChild(opt);
+    });
+
+    selectCandidate.innerHTML = `<option value="">Choose a candidate</option>`;
+  }
+
+  function renderBlockchain() {
+    const container = document.getElementById("blockchainContainer");
+    container.innerHTML = "";
+    const chain = loadChain();
+    if (!chain.length) {
+      container.innerHTML = "<div class='small-text'>Blockchain is empty.</div>";
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "block-table";
+    const thead = document.createElement("thead");
+    thead.innerHTML =
+      "<tr><th>#</th><th>Election</th><th>Candidate</th><th>Voter hash</th><th>Prev</th><th>Hash</th></tr>";
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    chain.forEach((b) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${b.index}</td>
+        <td>${b.electionId}</td>
+        <td>${b.candidateId}</td>
+        <td>${b.voterHash}</td>
+        <td>${b.prevHash.slice(0, 8)}…</td>
+        <td>${b.hash.slice(0, 8)}…</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
+  }
+
+  function renderResults() {
+    const container = document.getElementById("resultsContainer");
+    container.innerHTML = "";
+    const results = computeResults();
+    if (!results.length) {
+      container.innerHTML = "<div class='small-text'>No elections / votes yet.</div>";
+      return;
+    }
+    results.forEach(({ election, counts }) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      const header = document.createElement("div");
+      header.className = "item-header";
+      const title = document.createElement("div");
+      title.textContent = `Results – #${election.id} ${election.title}`;
+      header.appendChild(title);
+      div.appendChild(header);
+
+      const totalVotes = election.candidates.reduce(
+        (acc, c) => acc + (counts[c.id] || 0),
+        0
+      );
+      const info = document.createElement("div");
+      info.className = "small-text";
+      info.textContent = `Total votes: ${totalVotes}`;
+      div.appendChild(info);
+
+      election.candidates.forEach((c) => {
+        const line = document.createElement("div");
+        line.className = "small-text";
+        line.textContent = `• ${c.name}: ${counts[c.id] || 0} vote(s)`;
+        div.appendChild(line);
+      });
+
+      container.appendChild(div);
+    });
+  }
+
+  function renderLogs() {
+    const box = document.getElementById("logBox");
+    const logs = loadList(STORAGE_KEYS.logs);
+    if (!logs.length) {
+      box.innerHTML = "<div class='log-line'>[no actions yet]</div>";
+      return;
+    }
+    box.innerHTML = "";
+    logs.slice(-40).forEach((line) => {
+      const div = document.createElement("div");
+      div.className = "log-line";
+      div.textContent = line;
+      box.appendChild(div);
+    });
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ---------- Event listeners ----------
+
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const user = getCurrentUser();
+      const target = btn.dataset.section;
+      // simple guard: admin section requires admin, etc.
+      if (target === "adminSection") {
+        if (!user || user.role !== "admin") {
+          alert("You must login as ADMIN to view this section.");
+          showSection("authSection");
+          return;
+        }
+      }
+      if (target === "voterSection") {
+        if (!user) {
+          alert("You must login as a voter/admin to view this section.");
+          showSection("authSection");
+          return;
+        }
+      }
+      showSection(target);
+    });
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    const user = getCurrentUser();
+    if (user) appendLog(`LOGOUT user=${user.username}`);
+    setCurrentUser(null);
+    showSection("authSection");
+  });
+
+  document.getElementById("registerSubmit").addEventListener("click", () => {
+    const u = document.getElementById("regUsername").value.trim();
+    const p = document.getElementById("regPassword").value;
+    const c = document.getElementById("regConfirm").value;
+    const msg = registerUser(u, p, c);
+    document.getElementById("regMessage").textContent = msg;
+  });
+
+  document.getElementById("loginSubmit").addEventListener("click", () => {
+    const u = document.getElementById("loginUsername").value.trim();
+    const p = document.getElementById("loginPassword").value;
+    const res = loginUser(u, p);
+    const msgEl = document.getElementById("authMessage");
+    msgEl.textContent = res.msg;
+    if (res.ok) {
+      const user = getCurrentUser();
+      if (user.role === "admin") showSection("adminSection");
+      else showSection("voterSection");
+      renderElections();
+      renderActiveElections();
+    }
+  });
+
+  // admin events
+  document.getElementById("createElectionBtn").addEventListener("click", () => {
+    const title = document.getElementById("electionTitle").value.trim();
+    const desc = document.getElementById("electionDesc").value.trim();
+    const msg = createElection(title, desc);
+    alert(msg);
+    document.getElementById("electionTitle").value = "";
+    document.getElementById("electionDesc").value = "";
+  });
+
+  document.getElementById("viewChainBtn").addEventListener("click", () => {
+    renderBlockchain();
+  });
+
+  document.getElementById("checkChainBtn").addEventListener("click", () => {
+    const res = verifyChain();
+    const statusEl = document.getElementById("chainStatus");
+    if (res.ok) {
+      statusEl.innerHTML = `<span class="label-ok">✔ ${res.msg}</span>`;
+    } else {
+      statusEl.innerHTML = `<span class="label-bad">✖ ${res.msg}</span>`;
+    }
+  });
+
+  document.getElementById("showResultsBtn").addEventListener("click", () => {
+    renderResults();
+  });
+
+  // voter events
+  document.getElementById("voteElectionSelect").addEventListener("change", (e) => {
+    const val = Number(e.target.value);
+    const selectCand = document.getElementById("voteCandidateSelect");
+    selectCand.innerHTML = `<option value="">Choose a candidate</option>`;
+    if (!val) return;
+    const elections = loadList(STORAGE_KEYS.elections);
+    const election = elections.find((el) => el.id === val);
+    if (!election) return;
+    election.candidates.forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = `${c.id}) ${c.name}`;
+      selectCand.appendChild(opt);
+    });
+  });
+
+  document.getElementById("castVoteBtn").addEventListener("click", () => {
+    const user = getCurrentUser();
+    const electionId = Number(document.getElementById("voteElectionSelect").value);
+    const candidateId = Number(document.getElementById("voteCandidateSelect").value);
+    const msgEl = document.getElementById("voteMessage");
+
+    if (!user) {
+      msgEl.textContent = "You must be logged in to vote.";
+      return;
+    }
+    if (!electionId || !candidateId) {
+      msgEl.textContent = "Please choose an election and a candidate.";
+      return;
+    }
+    const msg = castVote(user.username, electionId, candidateId);
+    msgEl.textContent = msg;
+    renderBlockchain();
+    renderResults();
+  });
+
+  // ---------- init ----------
+
+  function init() {
+    loadChain(); // ensures genesis block exists
+    updateUserPill();
+    renderElections();
+    renderActiveElections();
+    renderLogs();
+  }
+
+  init();
+</script>
+</body>
+</html>

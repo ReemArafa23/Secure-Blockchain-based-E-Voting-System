@@ -4,31 +4,21 @@ from election import list_active_elections
 from blockchain import add_vote_to_blockchain
 from reporting import log_action
 
-# Base directory (project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VOTES_FILE = os.path.join(BASE_DIR, "data", "votes.json")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
+VOTES_FILE = os.path.join(DATA_DIR, "votes.json")
 
 def _load_votes():
-    """Load list of votes from votes.json."""
     if not os.path.exists(VOTES_FILE):
         return []
-
     with open(VOTES_FILE, "r", encoding="utf-8") as f:
-        try:
-            data = json.load(f)
-            if isinstance(data, list):
-                return data
-            return []
-        except json.JSONDecodeError:
-            return []
-
+        return json.load(f)
 
 def _save_votes(votes):
-    """Save list of votes into votes.json."""
     with open(VOTES_FILE, "w", encoding="utf-8") as f:
         json.dump(votes, f, indent=2)
-
 
 def _next_vote_id(votes):
     """Return next integer ID for a new vote."""

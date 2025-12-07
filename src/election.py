@@ -1,28 +1,22 @@
 import json
 import os
+from reporting import log_action
 
-# Base directory (project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ELECTIONS_FILE = os.path.join(BASE_DIR, "data", "elections.json")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
+ELECTIONS_FILE = os.path.join(DATA_DIR, "elections.json")
 
 def _load_elections():
-    """Load elections list from elections.json."""
+    print("DEBUG ELECTIONS_FILE:", ELECTIONS_FILE)  # TEMP
     if not os.path.exists(ELECTIONS_FILE):
+        print("DEBUG: elections.json does NOT exist")
         return []
-
     with open(ELECTIONS_FILE, "r", encoding="utf-8") as f:
-        try:
-            data = json.load(f)
-            if isinstance(data, list):
-                return data
-            return []
-        except json.JSONDecodeError:
-            return []
-
+        return json.load(f)
 
 def _save_elections(elections):
-    """Save elections list back to elections.json."""
     with open(ELECTIONS_FILE, "w", encoding="utf-8") as f:
         json.dump(elections, f, indent=2)
 

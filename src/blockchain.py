@@ -1,11 +1,13 @@
 import json
 import os
-import hashlib
 from datetime import datetime
+import hashlib
 
-# Base directory (project root)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BLOCKCHAIN_FILE = os.path.join(BASE_DIR, "data", "blockchain.json")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+BLOCKCHAIN_FILE = os.path.join(DATA_DIR, "blockchain.json")
 
 
 def _load_chain_raw():

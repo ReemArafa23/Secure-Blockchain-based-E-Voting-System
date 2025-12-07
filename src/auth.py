@@ -4,29 +4,26 @@ import hashlib
 import getpass
 from reporting import log_action
 
-
-# Build the path to data/users.json
+# ====== COMMON PATH SETUP ======
+# project root ( .. from src/ )
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-USERS_FILE = os.path.join(BASE_DIR, "data", "users.json")
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
 
+USERS_FILE = os.path.join(DATA_DIR, "users.json")
+# ================================
 
 def _load_users():
-    """Read users from users.json (returns a list of dicts)."""
+    print("DEBUG USERS_FILE:", USERS_FILE)  # <-- TEMP DEBUG
     if not os.path.exists(USERS_FILE):
+        print("DEBUG: users.json does NOT exist")
         return []
-
     with open(USERS_FILE, "r", encoding="utf-8") as f:
-        try:
-            data = json.load(f)
-            if isinstance(data, list):
-                return data
-            return []
-        except json.JSONDecodeError:
-            return []
-
+        users = json.load(f)
+    print("DEBUG: loaded", len(users), "users")
+    return users
 
 def _save_users(users):
-    """Write the users list back to users.json."""
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(users, f, indent=2)
 
