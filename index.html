@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Blockchain E-Voting – Demo UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f1f7ff;
+      --bg-deep: #0b1f3b;
+      --card: #ffffff;
+      --accent: #2f80ed;       /* baby-ish blue */
+      --accent-soft: #e0ecff;
+      --accent-dark: #16386b;  /* dark blue */
+      --text-main: #1c2640;
+      --text-muted: #6b7a99;
+      --danger: #e63946;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 16px 40px rgba(6, 33, 76, 0.13);
+      --transition: 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #e0edff 0, #f5f9ff 45%, #ffffff 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* Top bar */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.4rem;
+      color: var(--accent-dark);
+    }
+
+    .logo-area span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      font-size: 0.8rem;
+      color: var(--accent-dark);
+    }
+
+    /* Nav */
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .nav-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 10px 25px rgba(23, 82, 178, 0.35);
+    }
+
+    .nav-btn:hover {
+      background: rgba(47, 128, 237, 0.09);
+      color: var(--accent-dark);
+      border-color: rgba(47, 128, 237, 0.35);
+    }
+
+    /* Layout */
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      color: var(--accent-dark);
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* Forms */
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 4px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid #ccd9f5;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(47, 128, 237, 0.25);
+    }
+
+    .btn-primary {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 25px rgba(23, 82, 178, 0.35);
+      transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow: 0 14px 32px rgba(23, 82, 178, 0.45);
+    }
+
+    .btn-ghost {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: #f7f9ff;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .btn-ghost:hover {
+      background: #fff;
+      border-color: rgba(47, 128, 237, 0.35);
+      color: var(--accent-dark);
+    }
+
+    .btn-danger {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(230, 57, 70, 0.3);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      background: rgba(230, 57, 70, 0.08);
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .small-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: #e4edff;
+      color: #344e93;
+    }
+
+    .list {
+      margin-top: 10px;
+      max-height: 230px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .item {
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      padding: 8px 9px;
+      margin-bottom: 6px;
+      background: #f9fbff;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-title {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 0.7rem;
+      background: rgba(15, 76, 129, 0.08);
+      color: #1f4a7c;
+    }
+
+    .block-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      margin-top: 6px;
+    }
+
+    .block-table th,
+    .block-table td {
+      border-bottom: 1px solid #e0e6f5;
+      padding: 4px 4px;
+      text-align: left;
+    }
+
+    .block-table th {
+      background: #f2f6ff;
+      color: var(--accent-dark);
+      position: sticky;
+      top: 0;
+    }
+
+    .label-ok {
+      color: #1b8a5a;
+      font-weight: 600;
+    }
+
+    .label-bad {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .security-list {
+      list-style: none;
+      font-size: 0.82rem;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: var(--text-main);
+    }
+
+    .security-list li span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .log-box {
+      background: #050b19;
+      color: #d6e3ff;
+      font-family: "Consolas", "Fira Code", monospace;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      max-height: 224px;
+      overflow: auto;
+    }
+
+    .log-line {
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="logo-area">
+      <h1>Secure Blockchain E-Voting</h1>
+      <span>Frontend demo – baby blue & dark blue theme</span>
+    </div>
+    <div class="row">
+      <div id="currentUserPill" class="status-pill">
+        Not logged in
+      </div>
+      <button id="logoutBtn" class="btn-ghost" style="display:none;">Logout</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-tabs" style="margin-bottom:14px;">
+    <button class="nav-btn active" data-section="authSection">🔑 Login / Register</button>
+    <button class="nav-btn" data-section="adminSection">🛡️ Admin</button>
+    <button class="nav-btn" data-section="voterSection">🗳️ Voter</button>
+    <button class="nav-btn" data-section="securitySection">🔐 Security & Logs</button>
+  </div>
+
+  <!-- Sections -->
+  <!-- AUTH -->
+  <section id="authSection" class="section active">
+    <div class="grid">
+      <!-- Login -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Login</h2>
+            <p class="card-sub">Use your username & password to access Admin or Voter dashboards.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" type="text" placeholder="e.g., admin" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="Your password" />
+        </div>
+        <button id="loginSubmit" class="btn-primary">Login</button>
+
+        <p class="small-text" style="margin-top: 10px;">
+          The first registered user becomes <span class="tag">ADMIN</span>.  
+          All later users become <span class="tag">VOTER</span>.
+        </p>
+
+        <p id="authMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+
+      <!-- Register -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Register</h2>
+            <p class="card-sub">
+              Creates a new user. First user = admin, others = voters. Stored only in your browser (demo).
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regUsername">New username</label>
+          <input id="regUsername" type="text" placeholder="Choose a username" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input id="regPassword" type="password" placeholder="Choose a password" />
+        </div>
+        <div class="form-group">
+          <label for="regConfirm">Confirm password</label>
+          <input id="regConfirm" type="password" placeholder="Re-type password" />
+        </div>
+        <button id="registerSubmit" class="btn-primary">Register</button>
+
+        <p id="regMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN SECTION -->
+  <section id="adminSection" class="section">
+    <div class="grid">
+      <!-- Elections management -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Elections & Candidates</h2>
+            <p class="card-sub">Create elections, configure candidates, and open/close voting windows.</p>
+          </div>
+          <span class="tag">Admin only</span>
+        </div>
+
+        <!-- Create election -->
+        <div class="form-group">
+          <label>New election title</label>
+          <input id="electionTitle" type="text" placeholder="Student Union President 2025" />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input id="electionDesc" type="text" placeholder="Short summary of the election" />
+        </div>
+        <button id="createElectionBtn" class="btn-primary">Create Election</button>
+
+        <div class="small-text">Hint: Elections are created CLOSED. Toggle them to ACTIVE when you're ready.</div>
+
+        <div class="list" id="electionList"></div>
+      </div>
+
+      <!-- Blockchain & results -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Blockchain & Integrity</h2>
+            <p class="card-sub">Inspect the vote ledger and run integrity checks. View tallied results.</p>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:8px;">
+          <button id="viewChainBtn" class="btn-ghost">View Blockchain</button>
+          <button id="checkChainBtn" class="btn-ghost">Verify Integrity</button>
+          <button id="showResultsBtn" class="btn-ghost">Show Results</button>
+        </div>
+
+        <p id="chainStatus" class="small-text"></p>
+
+        <div id="blockchainContainer" class="list" style="max-height:170px;"></div>
+
+        <div id="resultsContainer" class="list" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOTER SECTION -->
+  <section id="voterSection" class="section">
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Active Elections</h2>
+            <p class="card-sub">See all currently open elections and their candidates.</p>
+          </div>
+        </div>
+        <div id="activeElectionsList" class="list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Cast Your Vote</h2>
+            <p class="card-sub">
+              Select an active election and candidate. The system prevents double-voting.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="voteElectionSelect">Election</label>
+          <select id="voteElectionSelect">
+            <option value="">Choose an active election</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="voteCandidateSelect">Candidate</label>
+          <select id="voteCandidateSelect">
+            <option value="">Choose a candidate</option>
+          </select>
+        </div>
+
+        <button id="castVoteBtn" class="btn-primary">Cast Vote</button>
+        <p id="voteMessage" class="small-text" style="margin-top: 8px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY SECTION -->
+  <section id="securitySection" class="section">
+    <div class="grid">
+      <!-- Explanation -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Security Overview</h2>
+            <p class="card-sub">High-level summary of how the system protects integrity & access.</p>
+          </div>
+        </div>
+
+        <ul class="security-list">
+          <li><span>Authentication & Roles:</span> Users login with a username & password. The first user is an
+            <strong>Admin</strong>, later ones are <strong>Voters</strong>. Each role sees different menus.</li>
+          <li><span>Password Handling:</span> On this demo UI, passwords are stored as a simple hash in
+            <code>localStorage</code> to mirror the console backend where salted SHA-256 is used.</li>
+          <li><span>Election Control:</span> Only admins can create, configure, open, or close elections. Voters can
+            only interact with <strong>active</strong> elections.</li>
+          <li><span>Double-Voting Protection:</span> Before a vote is accepted, the system checks if this user already
+            voted in that election. If yes, the vote is rejected.</li>
+          <li><span>Blockchain Storage:</span> Every accepted vote is turned into a block (index, voter hash,
+            election ID, candidate ID, previous hash, current hash).</li>
+          <li><span>Integrity Verification:</span> When the admin runs a check, the app recomputes all hashes and
+            ensures each block’s <code>previousHash</code> matches the hash of the previous block.</li>
+          <li><span>Auditability:</span> Logs are simulated below to show registration, login, and voting actions.</li>
+        </ul>
+      </div>
+
+      <!-- Logs -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Action Log (Demo)</h2>
+            <p class="card-sub">Simple log showing what happened during this session.</p>
+          </div>
+        </div>
+        <div id="logBox" class="log-box"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footer-note">
+    This page is a <strong>frontend demo</strong> of your Python console project.  
+    Use it with GitHub Pages to present the system visually while the real security logic runs in Python.
+  </p>
+</div>
+
+<script>
+  const authMsg = document.getElementById("authMessage");
+  const regMsg  = document.getElementById("regMessage");
+  const userPill = document.getElementById("currentUserPill");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // ---------- helpers ----------
+
+  async function api(path, options = {}) {
+    const res = await fetch(path, {
+      credentials: "include",          // send cookies for session
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    return res.json();
+  }
+
+  function setUserPill(user) {
+    if (!user) {
+      userPill.textContent = "Not logged in";
+      logoutBtn.style.display = "none";
+    } else {
+      userPill.textContent = `${user.username} (${user.role.toUpperCase()})`;
+      logoutBtn.style.display = "inline-flex";
+    }
+  }
+
+  function showSection(id) {
+    document.querySelectorAll(".section").forEach(sec => {
+      sec.classList.toggle("active", sec.id === id);
+    });
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.section === id);
+    });
+  }
+
+  async function refreshMe() {
+    const data = await api("/api/me");
+    setUserPill(data.user);
+  }
+
+  // ---------- AUTH ----------
+
+  document.getElementById("registerSubmit").addEventListener("click", async () => {
+    const u = document.getElementById("regUsername").value.trim();
+    const p = document.getElementById("regPassword").value;
+    const c = document.getElementById("regConfirm").value;
+
+    if (!u || !p || !c) {
+      regMsg.textContent = "Please fill all fields.";
+      return;
+    }
+    if (p !== c) {
+      regMsg.textContent = "Passwords do not match.";
+      return;
+    }
+
+    const data = await api("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ username: u, password: p }),
+    });
+
+    if (data.ok) {
+      regMsg.textContent = `Registered as ${data.role.toUpperCase()}. You can now login.`;
+    } else {
+      regMsg.textContent = data.error || "Error during registration.";
+    }
+  });
+
+  document.getElementById("loginSubmit").addEventListener("click", async () => {
+    const u = document.getElementById("loginUsername").value.trim();
+    const p = document.getElementById("loginPassword").value;
+
+    const data = await api("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ username: u, password: p }),
+    });
+
+    if (data.ok) {
+      authMsg.textContent = `Logged in as ${data.role.toUpperCase()}.`;
+      setUserPill({ username: data.username, role: data.role });
+      if (data.role === "admin") {
+        showSection("adminSection");
+        loadAdminData();
+      } else {
+        showSection("voterSection");
+        loadVoterData();
+      }
+    } else {
+      authMsg.textContent = data.error || "Login failed.";
+    }
+  });
+
+  logoutBtn.addEventListener("click", async () => {
+    await api("/api/logout", { method: "POST" });
+    setUserPill(null);
+    showSection("authSection");
+  });
+
+  // ---------- NAV GUARDS ----------
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const target = btn.dataset.section;
+      const me = await api("/api/me");
+      const user = me.user;
+
+      if (target === "adminSection") {
+        if (!user || user.role !== "admin") {
+          alert("You must be logged in as ADMIN.");
+          showSection("authSection");
+          return;
+        }
+        showSection("adminSection");
+        loadAdminData();
+        return;
+      }
+
+      if (target === "voterSection") {
+        if (!user) {
+          alert("You must be logged in.");
+          showSection("authSection");
+          return;
+        }
+        showSection("voterSection");
+        loadVoterData();
+        return;
+      }
+
+      showSection(target);
+      if (target === "securitySection") {
+        loadSecurityData();
+      }
+    });
+  });
+
+  // ---------- ADMIN: elections + blockchain + results ----------
+
+  async function loadAdminData() {
+    await Promise.all([renderElections(), renderBlockchain(), renderResults()]);
+  }
+
+  async function renderElections() {
+    const container = document.getElementById("electionList");
+    container.innerHTML = "";
+    const data = await api("/api/elections");
+    if (!data.ok) return;
+
+    data.elections.forEach(e => {
+      const div = document.createElement("div");
+      div.className = "item";
+
+      const header = document.createElement("div");
+      header.className = "item-header";
+
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = `#${e.id} – ${e.title}`;
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = e.is_active ? "ACTIVE" : "CLOSED";
+
+      header.appendChild(title);
+      header.appendChild(pill);
+
+      const desc = document.createElement("div");
+      desc.className = "small-text";
+      desc.textContent = e.description || "";
+
+      const cand = document.createElement("div");
+      cand.className = "small-text";
+      cand.textContent = "Candidates: " +
+        (e.candidates.length
+          ? e.candidates.map(c => `${c.id}) ${c.name}`).join(", ")
+          : "none");
+
+      const controls = document.createElement("div");
+      controls.className = "row";
+      controls.style.marginTop = "4px";
+
+      const inp = document.createElement("input");
+      inp.placeholder = "New candidate name";
+      inp.style.flex = "1";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "btn-ghost";
+      addBtn.textContent = "Add";
+      addBtn.onclick = async () => {
+        const name = inp.value.trim();
+        if (!name) return;
+        await api(`/api/elections/${e.id}/candidates`, {
+          method: "POST",
+          body: JSON.stringify({ name }),
+        });
+        renderElections();
+        renderActiveElections();
+      };
+
+      const toggleBtn = document.createElement("button");
+      toggleBtn.className = "btn-ghost";
+      toggleBtn.textContent = e.is_active ? "Close" : "Open";
+      toggleBtn.onclick = async () => {
+        await api(`/api/elections/${e.id}/toggle`, { method: "POST" });
+        renderElections();
+        renderActiveElections();
+      };
+
+      controls.appendChild(inp);
+      controls.appendChild(addBtn);
+      controls.appendChild(toggleBtn);
+
+      div.appendChild(header);
+      div.appendChild(desc);
+      div.appendChild(cand);
+      div.appendChild(controls);
+
+      container.appendChild(div);
+    });
+  }
+
+  document.getElementById("createElectionBtn").addEventListener("click", async () => {
+    const title = document.getElementById("electionTitle").value.trim();
+    const description = document.getElementById("electionDesc").value.trim();
+    if (!title) {
+      alert("Title required");
+      return;
+    }
+    await api("/api/elections", {
+      method: "POST",
+      body: JSON.stringify({ title, description }),
+    });
+    document.getElementById("electionTitle").value = "";
+    document.getElementById("electionDesc").value = "";
+    renderElections();
+  });
+
+  async function renderBlockchain() {
+    const container = document.getElementById("blockchainContainer");
+    container.innerHTML = "";
+    const data = await api("/api/blockchain");
+    if (!data.ok) return;
+    const chain = data.chain;
+
+    const table = document.createElement("table");
+    table.className = "block-table";
+    const head = document.createElement("thead");
+    head.innerHTML = "<tr><th>#</th><th>Election</th><th>Candidate</th><th>Voter hash</th><th>Prev</th><th>Hash</th></tr>";
+    table.appendChild(head);
+    const body = document.createElement("tbody");
+    chain.forEach(b => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${b.index}</td>
+        <td>${b.election_id}</td>
+        <td>${b.candidate_id}</td>
+        <td>${b.voter_hash}</td>
+        <td>${String(b.previous_hash).slice(0,8)}…</td>
+        <td>${b.hash.slice(0,8)}…</td>
+      `;
+      body.appendChild(tr);
+    });
+    table.appendChild(body);
+    container.appendChild(table);
+  }
+
+  document.getElementById("viewChainBtn").addEventListener("click", renderBlockchain);
+
+  document.getElementById("checkChainBtn").addEventListener("click", async () => {
+    const res = await api("/api/blockchain/verify");
+    const el = document.getElementById("chainStatus");
+    if (res.valid) {
+      el.innerHTML = `<span class="label-ok">✔ ${res.message}</span>`;
+    } else {
+      el.innerHTML = `<span class="label-bad">✖ ${res.message}</span>`;
+    }
+  });
+
+  async function renderResults() {
+    const container = document.getElementById("resultsContainer");
+    container.innerHTML = "";
+    const data = await api("/api/results");
+    if (!data.ok) return;
+    data.results.forEach(r => {
+      const e = r.election;
+      const counts = r.counts;
+      const div = document.createElement("div");
+      div.className = "item";
+      const h = document.createElement("div");
+      h.className = "item-header";
+      h.innerHTML = `<div>Results – #${e.id} ${e.title}</div>`;
+      div.appendChild(h);
+
+      const total = (e.candidates || []).reduce(
+        (acc, c) => acc + (counts[c.id] || 0), 0
+      );
+      const info = document.createElement("div");
+      info.className = "small-text";
+      info.textContent = `Total votes: ${total}`;
+      div.appendChild(info);
+
+      (e.candidates || []).forEach(c => {
+        const line = document.createElement("div");
+        line.className = "small-text";
+        line.textContent = `• ${c.name}: ${counts[c.id] || 0} vote(s)`;
+        div.appendChild(line);
+      });
+
+      container.appendChild(div);
+    });
+  }
+
+  document.getElementById("showResultsBtn").addEventListener("click", renderResults);
+
+  // ---------- VOTER ----------
+
+  async function loadVoterData() {
+    await renderActiveElections();
+  }
+
+  async function renderActiveElections() {
+    const listDiv = document.getElementById("activeElectionsList");
+    const selElection = document.getElementById("voteElectionSelect");
+    const selCandidate = document.getElementById("voteCandidateSelect");
+
+    listDiv.innerHTML = "";
+    selElection.innerHTML = `<option value="">Choose an active election</option>`;
+    selCandidate.innerHTML = `<option value="">Choose a candidate</option>`;
+
+    const data = await api("/api/elections/active");
+    if (!data.ok) return;
+    const active = data.elections;
+
+    active.forEach(e => {
+      const div = document.createElement("div");
+      div.className = "item";
+      const header = document.createElement("div");
+      header.className = "item-header";
+      header.innerHTML = `<div class="item-title">#${e.id} – ${e.title}</div><span class="pill">ACTIVE</span>`;
+      const desc = document.createElement("div");
+      desc.className = "small-text";
+      desc.textContent = e.description || "";
+
+      const cand = document.createElement("div");
+      cand.className = "small-text";
+      cand.textContent = "Candidates: " +
+        (e.candidates.length
+          ? e.candidates.map(c => `${c.id}) ${c.name}`).join(", ")
+          : "none");
+
+      div.appendChild(header);
+      div.appendChild(desc);
+      div.appendChild(cand);
+      listDiv.appendChild(div);
+
+      const opt = document.createElement("option");
+      opt.value = e.id;
+      opt.textContent = `#${e.id} – ${e.title}`;
+      selElection.appendChild(opt);
+    });
+  }
+
+  document.getElementById("voteElectionSelect").addEventListener("change", async (e) => {
+    const val = Number(e.target.value);
+    const selCandidate = document.getElementById("voteCandidateSelect");
+    selCandidate.innerHTML = `<option value="">Choose a candidate</option>`;
+    if (!val) return;
+    const data = await api("/api/elections/active");
+    if (!data.ok) return;
+    const election = data.elections.find(el => el.id === val);
+    if (!election) return;
+    election.candidates.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = `${c.id}) ${c.name}`;
+      selCandidate.appendChild(opt);
+    });
+  });
+
+  document.getElementById("castVoteBtn").addEventListener("click", async () => {
+    const electionId = Number(document.getElementById("voteElectionSelect").value);
+    const candidateId = Number(document.getElementById("voteCandidateSelect").value);
+    const msgEl = document.getElementById("voteMessage");
+    msgEl.textContent = "";
+
+    if (!electionId || !candidateId) {
+      msgEl.textContent = "Please choose election and candidate.";
+      return;
+    }
+
+    const data = await api("/api/vote", {
+      method: "POST",
+      body: JSON.stringify({ election_id: electionId, candidate_id: candidateId }),
+    });
+
+    if (data.ok) {
+      msgEl.textContent = `Vote recorded (block index ${data.block_index}).`;
+      renderBlockchain();
+      renderResults();
+    } else {
+      msgEl.textContent = data.error || "Voting failed.";
+    }
+  });
+
+  // ---------- Security logs section ----------
+
+  async function loadSecurityData() {
+    // logs are still in backend files (Python), but for now you can explain that in the UI.
+    // If you want, you can make another endpoint to stream the log file.
+  }
+
+  // init
+  refreshMe();
+</script>
+</body>
+</html>
